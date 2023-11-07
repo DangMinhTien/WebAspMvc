@@ -1,0 +1,45 @@
+﻿@page
+@model Bai1_ChinhThuc.Areas.Admin.Pages.Roles.IndexModel
+@{
+}
+<h2>Danh sách các Role</h2>
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+<div>
+    <a class="btn btn-primary" asp-page="./Create">Tạo Role</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã Role</th>
+            <th>Tên Role</th>
+            <th>Claims</th>
+            <th>Tác vụ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.roles)
+        {
+            <tr>
+                <td>@role.Id</td>
+                <td>@role.Name</td>
+                <td>
+                    @foreach(var claims in role.Claims)
+                    {
+                        <small>@claims</small><br />
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-success" asp-page="./Edit" asp-route-roleid="@role.Id">Chỉnh sửa</a> |
+                    <a class="btn btn-success" asp-page="./Delete" asp-route-roleid="@role.Id">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("", "", "Admin", "/Roles/Index");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Bai1_ChinhThuc.Model.Product.ProductModel>
+
+@{
+    ViewData["Title"] = "Danh sách bài viết";
+    var index = ViewBag.PageIndex;
+}
+<partial name="_StatusMessage" model="@TempData["StatusMessage"]"></partial>
+<h1>@ViewData["Title"]</h1>
+<p>Tổng số bài viết: @ViewBag.totalPost</p>
+<p>
+    <a class="btn btn-primary btn-sm" asp-action="Create">Tạo bài viết mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Published)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCreated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateUpdated)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@(index++)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ProductId">@item.Title</a>
+                <br>
+                <small>
+                    @string.Join(",",item.ProductCategoryProducts.Select(pc => pc.CategoryProduct.Title))
+                </small>
+                
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Published)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateUpdated)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.ProductId">Chi tiết</a> |
+                <a asp-action="Delete" asp-route-id="@item.ProductId">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<partial name="_Paging" model="@ViewBag.pagingmodel"></partial>
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("Product", "Index", "Product");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

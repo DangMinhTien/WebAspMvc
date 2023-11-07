@@ -1,0 +1,75 @@
+﻿@model List<ProductModel>
+@using Bai1_ChinhThuc.Model.Blog
+@using Bai1_ChinhThuc.Views.Shared.Components.CategoryProductSidebar
+@{
+    List<CategoryProduct> categories = ViewBag.categories as List<CategoryProduct>;
+    CategoryProduct category = ViewBag.category as CategoryProduct;
+    ViewData["Title"] = (category != null) ? category.Title : "Sản phẩm trong tất cả các chuyên mục";
+}
+<h1>@ViewData["Title"]</h1>
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" asp-controller="ViewProduct"
+               asp-area="Product" asp-route-categoriesSlug="">Home</a>
+        </li>
+        @if(category != null)
+        {
+            var lstParent = category.GetParents();
+            @foreach(var cate in lstParent)
+            {
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="ViewProduct"
+                        asp-area="Product" asp-route-categoriesSlug="@cate.Slug">@cate.Title</a>
+                </li>
+            }
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-controller="ViewProduct"
+                    asp-area="Product" asp-route-categoriesSlug="@category.Slug">@category.Title</a>
+            </li>
+        }
+    </ol>
+</nav>
+@if (category != null)
+{
+    <hr />
+    @Html.Raw(category.Decreption)
+}
+else
+{
+    <p>Sản Phẩm trong tất cả các thể loại...</p>
+}
+<hr />
+<div class="d-flex flex-wrap justify-content-between">
+@foreach(var product in Model)
+{
+        var srcImg = "/contents/No_Image_Available.jpg";
+        if(product.Photos.Count() > 0)
+        {
+            srcImg = "/contents/Products/" + product.Photos.FirstOrDefault()?.FileName;
+        }
+        <div class="card mb-3" style="width: 32%;">
+        <img src="@srcImg" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">@product.Title</h5>
+            <p class="card-text">@product.Decerption</p>
+            <p>Chủ đề: <strong>@product.ProductCategoryProducts.FirstOrDefault()?.CategoryProduct.Title</strong></p>
+            <p>Giá: <strong class="text-danger">@product.Price</strong></p>
+        </div>
+        <div class="card-body">
+            <a class="card-link" asp-action="Details" asp-controller="ViewProduct"
+                asp-area="Product" asp-route-productSlug="@product.Slug">Chi tiết</a>
+                <a class="btn btn-primary ml-4" asp-action="AddToCart" asp-controller="ViewProduct"
+                   asp-area="Product" asp-route-productid="@product.ProductId">Đặt hàng</a>
+        </div>
+    </div>
+}
+</div>
+<partial name="_Paging" model="@ViewBag.pagingmodel"></partial>
+@section SideBar {
+    @await Component.InvokeAsync("Bai1_ChinhThuc.Views.Shared.Components.CategoryProductSidebar.CategoryProductSidebar",
+                new CategoryProductSidebar.CategoryProductSidebarData(){
+                    Categories = categories,
+                    lever = 0,
+                    categorySlug = ViewBag.categoriesSlug
+                })
+}

@@ -1,0 +1,42 @@
+﻿.navbar-brand:hover {
+    color: aqua !important;
+}
+.navbar-brand {
+    color: white !important;
+}
+.navbar {
+    background-color: #0d3f70 !important;
+    
+}
+.dropdown-toggle {
+    color: white;
+    border-color: transparent !important;
+}
+.footer {
+    background-color: #0d3f70 !important;
+    color: white !important;
+}
+.categorysidebar ul{
+    list-style: none;
+    padding-left: 15px;
+}
+.categorysidebar a {
+    text-decoration: none;
+}
+.categorysidebar a:hover{
+    color: #de0909;
+}
+.categorysidebar a.active {
+    color: red;
+}
+.categorysidebar>ul>li>a{
+    font-weight: bold;
+}
+.categorysidebar h3{
+    text-transform: uppercase;
+    font-size: 1.3em;
+    border-bottom: 1px solid blue;
+    padding-bottom: 10px;
+}
+
+

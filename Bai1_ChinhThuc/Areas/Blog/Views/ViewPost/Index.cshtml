@@ -1,0 +1,64 @@
+﻿@model List<Post>
+@using Bai1_ChinhThuc.Model.Blog
+@using Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar
+@{
+    List<Category> categories = ViewBag.categories as List<Category>;
+    Category category = ViewBag.category as Category;
+    ViewData["Title"] = (category != null) ? category.Title : "Bài viết trong tất cả các chuyên mục";
+}
+<h1>@ViewData["Title"]</h1>
+@if(category != null)
+{
+    var lstParent = category.GetParents();
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @foreach(var cate in lstParent)
+            {
+                 <li class="breadcrumb-item"><a asp-action="Index" asp-controller="ViewPost"
+                       asp-area="Blog" asp-route-categoriesSlug="@cate.Slug">@cate.Title</a>
+                </li>
+            }
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-controller="ViewPost"
+                   asp-area="Blog" asp-route-categoriesSlug="@category.Slug">@category.Title</a>
+            </li>
+        </ol>
+    </nav>
+    <hr />
+    @Html.Raw(category.Decreption)
+}
+else
+{
+    <p>Bài viết trong tất cả các chuyên mục...</p>
+}
+<hr />
+
+@foreach(var post in Model)
+{
+    <div class="d-flex border-bottom mb-3 pb-3">
+        <div class="flex-shrink-0 w-25">
+            <img src="/contents/No_Image_Available.jpg" class="w-100" alt="Sample Image">
+        </div>
+        <div class="flex-grow-1 ms-3">
+            <h5>
+                <a asp-action="Details" asp-controller="ViewPost" asp-area="Blog" asp-route-postSlug="@post.Slug">@post.Title</a>
+                <small class="text-muted"><i>Posted on @post.DateCreated.ToShortDateString()</i></small>
+            </h5>
+            <p>@post.Decerption</p>
+            <p>Chủ đề: <span class="title-category">@post.PostCategories.FirstOrDefault()?.Category.Title</span></p>
+            <div class="author-row">
+                Tác giả: <strong>@post.Author.UserName</strong> |
+                Ngày cập nhật: <i>@post.DateUpdated.ToShortDateString()</i>
+            </div>
+        </div>
+    </div>
+}
+<partial name="_Paging" model="@ViewBag.pagingmodel"></partial>
+@section SideBar {
+    @await Component.InvokeAsync("Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar.CategorySidebar",
+                new CategorySidebar.CategorySidebarData(){
+                    Categories = categories,
+                    lever = 0,
+                    categorySlug = ViewBag.categoriesSlug
+                })
+}

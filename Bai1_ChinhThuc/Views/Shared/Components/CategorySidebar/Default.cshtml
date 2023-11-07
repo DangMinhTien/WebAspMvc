@@ -1,0 +1,41 @@
+﻿@model Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar.CategorySidebar.CategorySidebarData
+@using Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar
+@{
+}
+@if(Model.Categories?.Count > 0)
+{
+    if(Model.lever == 0)
+    {
+        @Html.Raw("<div class=\"categorysidebar\">")
+        <h3>
+            <a asp-action="Index" asp-controller="ViewPost" asp-area="Blog" asp-route-categoriesSlug="">
+                Tất cả các chuyên mục
+            </a>
+        </h3>
+    }
+    <ul>
+        @foreach(var category in Model.Categories)
+        {
+            var cssActive = (category.Slug == Model.categorySlug) ? "active" : null;
+            <li class="">
+                <a class="@cssActive" asp-action="Index" asp-controller="ViewPost" asp-area="Blog" asp-route-categoriesSlug="@category.Slug">
+                    @category.Title
+                </a>
+            </li>
+            if(category.CategoryChildren?.Count > 0)
+            {
+                @await Component.InvokeAsync("Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar.CategorySidebar",
+                        new CategorySidebar.CategorySidebarData(){
+                            Categories = category.CategoryChildren.ToList(),
+                            lever = Model.lever + 1,
+                            categorySlug = Model.categorySlug
+                        })
+
+            }
+        }
+    </ul>
+    if (Model.lever == 0)
+    {
+        @Html.Raw("</div>")
+    }
+}

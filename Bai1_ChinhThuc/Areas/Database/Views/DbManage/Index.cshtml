@@ -1,0 +1,61 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.EntityFrameworkCore
+@using System.Data
+@inject AppDbContext dbcontext
+@using Bai1_ChinhThuc.Menu;
+@inject AdminSideBarService _AdminSideBarService;
+@{
+    ViewData["title"] = "database infor";
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+    var connect = dbcontext.Database.GetDbConnection();
+    var dbName = connect.Database;
+    var can_connect = dbcontext.Database.CanConnect();
+}
+
+<h2>Thông tin về cơ sở dữ liệu</h2>
+<p>@dbName</p>
+<p>@connect.DataSource</p>
+<p>@connect.State</p>
+
+@foreach(var migration in dbcontext.Database.GetAppliedMigrations())
+{
+    <p>@migration</p>
+}
+
+@foreach (var migration in dbcontext.Database.GetPendingMigrations())
+{
+    <p>@migration (pending)</p>
+}
+
+
+@if(!can_connect)
+{
+    <div class="alert alert-danger">
+        <p>Không có khả nawg kết nối đến Database</p>
+    </div>
+}else
+{
+    <div class="alert alert-danger">
+        <p>Có khả nawg kết nối đến Database</p>
+    </div>
+    <h2>Các bảng</h2>
+    await dbcontext.Database.OpenConnectionAsync();
+    var tables = dbcontext.Database.GetDbConnection().GetSchema("Tables");
+    <ul>
+        @foreach(System.Data.DataRow row in tables.Rows)
+        {
+            <li>@row["TABLE_NAME"]</li>
+        }
+    </ul>
+}
+<form method="post" asp-action="SeedData">
+    <button type="submit">Tạo chuyên mục và bài viết</button>
+</form>
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("DbManage", "Index", "Database");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

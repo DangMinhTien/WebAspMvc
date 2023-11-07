@@ -1,0 +1,64 @@
+﻿@page
+@using Bai1_ChinhThuc.Helper
+@model Bai1_ChinhThuc.Areas.Admin.Pages.Users.IndexModel
+@inject UserManager<AppUser> _usermanage
+@{
+}
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+<h2>Danh sách các User</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã user</th>
+            <th>Tên đăng nhập</th>
+            <td>Vai trò</td>
+            <th>Email</th>
+            <th>Họ và tên</th>
+            <th>Tác vụ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.users)
+        {
+                <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                @{
+                    List<string> roleName = (await _usermanage.GetRolesAsync(user)).ToList();
+                    if(roleName.Count == 0)
+                    {
+                        <td><a class="" asp-page="./AddRole" asp-route-userid="@user.Id">+ Thêm vai trò</a></td>
+                    }
+                    else
+                    {
+                        var role = string.Join(", ", roleName);
+                        <td>
+                            <a class="" asp-page="./AddRole" asp-route-userid="@user.Id">@role</a>
+                        </td>
+                    }
+                }
+                
+                <td>@user.Email</td>
+                <td>@user.HomeAddress</td>
+                <td>
+                    <a class="btn btn-success" asp-page="./SetPassword" asp-route-userid="@user.Id">Đặt mật khẩu</a>
+                </td>
+                </tr>
+        }
+    </tbody>
+</table>
+@{
+    var pagemodel = new PagingModel()
+            {
+                currentPage = Model.currentPage,
+                countPage = Model.countPage,
+                generateUrl = (int? p) => Url.Page("./Index", new { p = p })
+            };
+        <partial name="_Paging" model="@pagemodel"></partial>
+}
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("", "", "Admin","/Users/Index");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

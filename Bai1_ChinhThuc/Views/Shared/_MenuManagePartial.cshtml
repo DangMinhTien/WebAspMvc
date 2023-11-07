@@ -1,0 +1,107 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Bai1_ChinhThuc.Model
+
+@inject IAuthorizationService authorizationService
+@inject SignInManager<AppUser> SignInManager
+<a class="nav-link text-light" asp-action="Index" asp-controller="AdminCP" asp-area="AdminCP"> 
+    Quản trị
+</a>
+<div class="dropdown">
+    @{
+        var ResultAuthor = await authorizationService.AuthorizeAsync(User, "ShowAdminMenu");
+        if (ResultAuthor.Succeeded)
+        {
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Manage
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="DbManage" asp-area="Database">
+                        Database
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Contacts" asp-area="Contacts">
+                        Quản lý liên hệ
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Blog">
+                        Quản lý chuyên mục Blog
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Post" asp-area="Blog">
+                        Quản lý bài viết Blog
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="CategoryProduct" asp-area="Product">
+                        Quản lý danh mục sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Product" asp-area="Product">
+                        Quản lý sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" class="dropdown-item" asp-action="Index" asp-controller="FileManager" asp-area="Files">
+                        Quản lý file
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-page="/Roles/Index" asp-area="Admin">
+                        Quản lý vai trò
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-page="/Users/Index" asp-area="Admin">
+                        Quản lý người dùng
+                    </a>
+                </li>
+            </ul>
+        }
+
+        else
+        {
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Menu
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Contacts" asp-area="Contacts">
+                        Quản lý liên hệ
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Category" asp-area="Blog">
+                        Quản lý chuyên mục Blog
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Post" asp-area="Blog">
+                        Quản lý bài viết Blog
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="CategoryProduct" asp-area="Product">
+                        Quản lý danh mục sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Product" asp-area="Product">
+                        Quản lý sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" class="dropdown-item" asp-action="Index" asp-controller="FileManager" asp-area="Files">
+                        Quản lý file
+                    </a>
+                </li>
+            </ul>
+        }
+    }
+    
+</div>

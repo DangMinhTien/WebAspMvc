@@ -1,0 +1,103 @@
+﻿@model Bai1_ChinhThuc.Model.Product.ProductModel
+@using Bai1_ChinhThuc.Model.Blog
+@using Bai1_ChinhThuc.Views.Shared.Components.CategoryProductSidebar
+@{
+    List<CategoryProduct> categories = ViewBag.categories as List<CategoryProduct>;
+    CategoryProduct category = ViewBag.category as CategoryProduct;
+    ViewData["title"] = Model.Title;
+    var otherproduct = ViewBag.otherproduct as List<ProductModel>;
+}
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" asp-controller="ViewProduct"
+               asp-area="Product" asp-route-categoriesSlug="">Home</a>
+        </li>
+        @if (category != null)
+        {
+            var lstParent = category.GetParents();
+            @foreach (var cate in lstParent)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="ViewProduct"
+                       asp-area="Product" asp-route-categoriesSlug="@cate.Slug">@cate.Title</a>
+                </li>
+            }
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-controller="ViewProduct"
+                   asp-area="Product" asp-route-categoriesSlug="@category.Slug">@category.Title</a>
+            </li>
+        }
+    </ol>
+</nav>
+<hr />
+<div class="detailpost">
+    <h1>@Model.Title</h1>
+    <div class="sapo">
+        @Model.Decerption
+    </div>
+    <div>
+        <p>Giá: <strong>@Model.Price</strong></p>
+        <a class="btn btn-primary ml-4" asp-action="AddToCart" asp-controller="ViewProduct"
+           asp-area="Product" asp-route-productid="@Model.ProductId">Đặt hàng</a>
+    </div>
+    <div>
+        <i>Cập nhật: @Model.DateUpdated.ToShortDateString()</i>
+    </div>
+    <div id="box-photo-upload" class="d-flex flex-wrap photo-upload" data-id="@Model.ProductId">
+
+    </div>
+    <hr />
+    @Html.Raw(Model.Content)
+</div>
+@section SideBar {
+    @await Component.InvokeAsync("Bai1_ChinhThuc.Views.Shared.Components.CategoryProductSidebar.CategoryProductSidebar",
+                new CategoryProductSidebar.CategoryProductSidebarData(){
+                    Categories = categories,
+                    lever = 0,
+                    categorySlug = category?.Slug
+                })
+        <ul class="list-group">
+            @foreach(var product in otherproduct)
+            {
+                <li class="list-group-item">
+                    <a asp-action="Details" asp-controller="ViewProduct" asp-area="Product" asp-route-productSlug="@product.Slug">@product.Title</a>
+                </li>
+            }
+        </ul>
+}
+@section Scripts{
+    <script type="text/javascript">
+        function LoadPhoto() {
+            var box = $("#box-photo-upload")
+            var ProductID = box.data("id")
+            box.empty()
+            var formData = new FormData();
+            formData.append("id", ProductID)
+            var urlListPhoto = "@Url.Action("ListPhoto")";
+            $.ajax({
+                data: formData,
+                catch: false,
+                url: urlListPhoto,
+                type: "POST",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.success == 1) {
+                        data.photos.forEach((item) => {
+                            var e = $(`<div class="photodetail w-25 p-1">
+                                            <img style="object-fit:contain" class="w-100 h-100 img-thumbnail" src="${item.path}" />
+                                      </div>`)
+                            box.append(e)
+                        })
+                    }
+                }
+            })
+
+            //console.log(ProductID)
+        }
+        $(document).ready(function(){
+            LoadPhoto()
+        })
+    </script>
+}

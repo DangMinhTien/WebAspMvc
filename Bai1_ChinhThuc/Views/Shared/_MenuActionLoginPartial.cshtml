@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Bai1_ChinhThuc.Model
+
+@inject IAuthorizationService authorizationService
+@inject SignInManager<AppUser> SignInManager
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a class="nav-link text-light" asp-area="Contacts" asp-controller="Contacts" asp-action="SendContact">Liên Hệ</a>
+    </li>
+}

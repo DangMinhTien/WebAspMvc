@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject Bai1_ChinhThuc.Areas.Product.Service.CartService _cartService
+
+
+@{
+    var cart = _cartService.GetCartItems();
+    if (cart.Count() > 0)
+    {
+        <div class="nav-item">
+            <a asp-action="Cart" asp-controller="ViewProduct" asp-area="Product">
+                <i class="fas fa-shopping-cart"></i>(@cart.Count)
+            </a>
+        </div>
+    }
+}

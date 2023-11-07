@@ -1,0 +1,57 @@
+﻿@model Bai1_ChinhThuc.Model.Blog.Post
+@using Bai1_ChinhThuc.Model.Blog
+@using Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar
+@{
+    List<Category> categories = ViewBag.categories as List<Category>;
+    Category category = ViewBag.category as Category;
+    ViewData["title"] = Model.Title;
+    var otherpost = ViewBag.otherpost as List<Post>;
+}
+@if(category != null)
+{
+    var lstParent = category.GetParents();
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @foreach (var cate in lstParent)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-action="Index" asp-controller="ViewPost"
+                       asp-area="Blog" asp-route-categoriesSlug="@cate.Slug">@cate.Title</a>
+                </li>
+            }
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-controller="ViewPost"
+                   asp-area="Blog" asp-route-categoriesSlug="@category.Slug">@category.Title</a>
+            </li>
+        </ol>
+    </nav>
+}
+<hr />
+<div class="detailpost">
+    <h1>@Model.Title</h1>
+    <div class="sapo">
+        @Model.Decerption
+    </div>
+    <div>
+        <i>Cập nhật: @Model.DateUpdated.ToShortDateString()</i> /
+        Tác giả: <strong>@Model.Author.UserName</strong>
+    </div>
+    <hr />
+    @Html.Raw(Model.Content)
+</div>
+@section SideBar {
+    @await Component.InvokeAsync("Bai1_ChinhThuc.Views.Shared.Components.CategorySidebar.CategorySidebar",
+                new CategorySidebar.CategorySidebarData(){
+                    Categories = categories,
+                    lever = 0,
+                    categorySlug = category?.Slug
+                })
+        <ul class="list-group">
+            @foreach(var post in otherpost)
+            {
+                <li class="list-group-item">
+                    <a asp-action="Details" asp-controller="ViewPost" asp-area="Blog" asp-route-postSlug="@post.Slug">@post.Title</a>
+                </li>
+            }
+        </ul>
+}

@@ -1,0 +1,23 @@
+﻿@model Bai1_ChinhThuc.Model.Product.ProductModel
+
+@{
+    ViewData["Title"] = "Xóa bài viết";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Bạn có muốn xóa sản phẩm này?</h3>
+<div>
+    <h4>@Model.Title</h4>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ProductId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Quay lại danh sách</a>
+    </form>
+</div>
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("Product", "Index", "Product");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

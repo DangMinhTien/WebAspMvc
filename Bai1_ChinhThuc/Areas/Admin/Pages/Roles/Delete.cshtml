@@ -1,0 +1,33 @@
+﻿@page
+@model Bai1_ChinhThuc.Areas.Admin.Pages.Roles.DeleteModel
+@{
+}
+<h2>Xóa Role</h2>
+
+<partial name="_StatusMessage" model="@Model.StatusMessage"></partial>
+
+<div class="row">
+    <div class="col-md-4">
+        <p>Mã role: @Model.role.Id</p>
+        <p>Tên role: @Model.role.Name</p>
+        <form method="post" asp-route-roleid="@Model.role.Id">
+            <div class="form-group">
+                <input type="submit" value="Xóa" class="btn btn-danger" />
+            </div>
+        </form>
+        <a class="btn btn-primary" asp-page="./Index">Danh sách các role</a>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("", "", "Admin", "/Roles/Index");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

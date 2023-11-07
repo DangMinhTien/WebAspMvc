@@ -1,0 +1,76 @@
+﻿@page
+@model Bai1_ChinhThuc.Areas.Admin.Pages.Users.AddRoleModel
+@{
+    ViewData["Title"] = "Gán vai trò cho người dùng";
+    //ViewData["ActivePage"] = ManageNavPages.ChangePassword;
+}
+
+<h4>Đặt vai trò cho người dùng: @Model.user.UserName</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="set-password-form" method="post" asp-route-userid="@Model.user.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.RoleNames"></label>
+                @Html.ListBoxFor(m => m.RoleNames, Model.allRole, new {
+                    id = "id-select-role",
+                    @class = "w-100"
+                })
+                <span asp-validation-for="@Model.RoleNames" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </form>
+        <a asp-page="./Index">Danh sách các thành viên</a>
+        <hr />
+        <p>Claim của user có được từ Role</p>
+        @if(Model.ClaimInRole.Count > 0)
+        {
+            <ul>
+                @foreach(var claim in Model.ClaimInRole)
+                {
+                    <li>
+                        @claim.ClaimType: @claim.ClaimValue
+                    </li>
+                }
+            </ul>
+        }
+        <hr />
+        <p>Claim của user (riêng)</p>
+        <a asp-page="EditUserClaim" asp-page-handler="AddClaim" asp-route-userid="@Model.user.Id">+ Thêm claim riêng</a>
+        @if (Model.ClaimInUser.Count > 0)
+        {
+            <ul>
+                @foreach (var claim in Model.ClaimInUser)
+                {
+                    <li>
+                        <a asp-page="EditUserClaim" asp-page-handler="EditClaim"
+                            asp-route-claimid="@claim.Id">
+                            @claim.ClaimType: @claim.ClaimValue
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/multiple-select@1.5.2/dist/multiple-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/multiple-select@1.5.2/dist/multiple-select.min.js"></script>
+    <script>
+        $("#id-select-role").multipleSelect({
+            selectAll: false,
+            keepOpen: false,
+            isOpen: false
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
+@section SideBar {
+    @{
+        _AdminSideBarService.SetActive("", "", "Admin", "/Users/Index");
+    }
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}

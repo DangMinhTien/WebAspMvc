@@ -1,0 +1,16 @@
+﻿@{
+    var thongbao = TempData["thongbao"] as string;
+    var status = TempData["status"] as string;
+}
+@if(!string.IsNullOrEmpty(thongbao))
+{
+    <div class="alert alert-danger">
+        <p>@thongbao</p>
+    </div>
+}
+@if (!string.IsNullOrEmpty(status))
+{
+    <div class="alert alert-success">
+        <p>@status</p>
+    </div>
+}

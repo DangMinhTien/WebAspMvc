@@ -1,0 +1,11 @@
+﻿@using Bai1_ChinhThuc.Menu;
+@inject AdminSideBarService _AdminSideBarService;
+
+@{
+    Layout = "/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Admin Control Panel";
+}
+Quản trị web site
+@section SideBar {
+    @Html.Raw(_AdminSideBarService.RenderHtml())
+}
